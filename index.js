@@ -3,32 +3,34 @@ const mainText = document.getElementById("mainText");
 let expression = "";
 let justEvaluated = false;
 
+// Clear screen
 const clear1 = () => {
   expression = "";
   justEvaluated = false;
   mainText.value = "";
 };
 
-const onClickNumber = (digit) => {
+// Append number or dot
+const onClickNumber = (char) => {
   if (justEvaluated) {
-    expression = ""; // Start fresh after result
+    expression = "";
     justEvaluated = false;
   }
-  expression += digit;
+  expression += char;
   mainText.value = expression;
 };
 
+// Generic operator handler
 const addOperator = (operator) => {
   if (justEvaluated) {
     justEvaluated = false;
-    // Use the result for chaining
-    expression = mainText.value;
+    expression = mainText.value; // Use result as starting point
   }
 
-  const lastChar = expression[expression.length - 1];
-  if ("+-*/".includes(lastChar)) {
-    // Replace last operator (e.g., avoid 2++3)
-    expression = expression.slice(0, -1);
+  const lastChar = expression.slice(-1);
+  if ("+-*/.".includes(lastChar)) {
+    // Prevent double operators (like 2++ or 2..)
+    return;
   }
 
   expression += operator;
@@ -37,15 +39,16 @@ const addOperator = (operator) => {
 
 const plus = () => addOperator("+");
 const minus = () => addOperator("-");
-const multiply = () => addOperator("*");
+const multiply = () => addOperator("*"); // ‘x’ visually, but JS uses '*'
 
+// Calculate result
 const equals = () => {
   try {
-    const result = eval(expression);
+    const result = eval(expression); // Use only in trusted environments
     mainText.value = result;
-    expression = result.toString(); // So we can continue using result
+    expression = result.toString(); // Allow further operations
     justEvaluated = true;
-  } catch (err) {
+  } catch (e) {
     mainText.value = "Error";
     expression = "";
     justEvaluated = false;
