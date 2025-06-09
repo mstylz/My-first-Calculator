@@ -1,79 +1,58 @@
-// DOM Utility
 const getMainText = () => document.getElementById("mainText");
 
-let accumulator = null;
-let operation = null;
-let shouldResetScreen = false;
+let expression = ""; // full string like "2+6"
+let resultShown = false;
 
-// Updates input display
 const setValue = (val) => {
   const mainText = getMainText();
   mainText.value = val;
 };
 
-// Gets current input value
-const getValue = () => {
-  const mainText = getMainText();
-  return parseFloat(mainText.value);
-};
-
-// Clears the input
 const clear1 = () => {
+  expression = "";
+  resultShown = false;
   setValue("");
-  accumulator = null;
-  operation = null;
-  shouldResetScreen = false;
 };
 
-// Called when user clicks a number
-const onClickNumber = (digit) => {
-  const mainText = getMainText();
-  if (shouldResetScreen) {
-    mainText.value = "";
-    shouldResetScreen = false;
+// Add number or operator to the expression
+const onClickNumber = (char) => {
+  if (resultShown) {
+    expression = ""; // reset if a result was just shown
+    resultShown = false;
   }
-  mainText.value += digit;
+  expression += char;
+  setValue(expression);
 };
 
-// Operation functions
 const plus = () => {
-  accumulator = getValue();
-  operation = "plus";
-  shouldResetScreen = true;
+  if (!expression.endsWith("+") && !expression.endsWith("-") && !expression.endsWith("*")) {
+    expression += "+";
+    setValue(expression);
+  }
 };
 
 const minus = () => {
-  accumulator = getValue();
-  operation = "minus";
-  shouldResetScreen = true;
+  if (!expression.endsWith("+") && !expression.endsWith("-") && !expression.endsWith("*")) {
+    expression += "-";
+    setValue(expression);
+  }
 };
 
 const multiply = () => {
-  accumulator = getValue();
-  operation = "multiply";
-  shouldResetScreen = true;
+  if (!expression.endsWith("+") && !expression.endsWith("-") && !expression.endsWith("*")) {
+    expression += "*";
+    setValue(expression);
+  }
 };
 
-// Equals function
 const equals = () => {
-  if (accumulator === null || operation === null) return;
-  const secondValue = getValue();
-  let result = 0;
-
-  switch (operation) {
-    case "plus":
-      result = accumulator + secondValue;
-      break;
-    case "minus":
-      result = accumulator - secondValue;
-      break;
-    case "multiply":
-      result = accumulator * secondValue;
-      break;
+  try {
+    const result = eval(expression); // CAUTION: eval can be dangerous; okay here for calculator use
+    setValue(result);
+    expression = result.toString();
+    resultShown = true;
+  } catch (err) {
+    setValue("Error");
+    expression = "";
   }
-
-  setValue(result);
-  accumulator = null;
-  operation = null;
-  shouldResetScreen = true;
 };
