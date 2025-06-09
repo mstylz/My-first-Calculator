@@ -1,59 +1,73 @@
-// DOM Elements
+// Utility Functions
+const getMainText = () => document.getElementById("mainText");
+
 const addTextToInput = function(digit) {
-  let mainText = document.getElementById("mainText");
+  const mainText = getMainText();
   mainText.value = mainText.value + digit;
 };
 
 const getValue = function() {
-  let mainText = document.getElementById("mainText");
-  return +mainText.value;
+  const mainText = getMainText();
+  return parseFloat(mainText.value) || 0;
 };
 
 const setValue = function(numericalValue) {
-  let mainText = document.getElementById("mainText");
+  const mainText = getMainText();
   mainText.value = numericalValue.toString();
 };
 
 const clear1 = function() {
-  let mainText = document.getElementById("mainText");
+  const mainText = getMainText();
   mainText.value = "";
 };
 
+// Calculator Logic
 let accumulator = 0;
 let operation = "";
+let isWaitingForSecondValue = false;
 
-// Arithmetic operation setup functions
 const plus = function() {
   accumulator = getValue();
   operation = "plus";
+  isWaitingForSecondValue = true;
 };
 
 const minus = function() {
   accumulator = getValue();
   operation = "minus";
+  isWaitingForSecondValue = true;
 };
 
 const multiply = function() {
   accumulator = getValue();
   operation = "multiply";
+  isWaitingForSecondValue = true;
 };
 
-// Perform calculation
 const equals = function() {
+  const secondValue = getValue();
   switch (operation) {
     case "plus":
-      setValue(accumulator + getValue());
+      setValue(accumulator + secondValue);
       break;
     case "minus":
-      setValue(accumulator - getValue());
+      setValue(accumulator - secondValue);
       break;
     case "multiply":
-      setValue(accumulator * getValue());
+      setValue(accumulator * secondValue);
       break;
   }
+  // Reset state
+  accumulator = 0;
+  operation = "";
+  isWaitingForSecondValue = false;
 };
 
-// Handle number/digit input
 const onClickNumber = function(digit) {
+  const mainText = getMainText();
+  if (isWaitingForSecondValue) {
+    mainText.value = ""; // Clear for second number entry
+    isWaitingForSecondValue = false;
+  }
   addTextToInput(digit);
 };
