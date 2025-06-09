@@ -26,19 +26,16 @@ let operation = "";
 const plus = function() {
   accumulator = getValue();
   operation = "plus";
-  clear1();
 };
 
 const minus = function() {
   accumulator = getValue();
   operation = "minus";
-  clear1();
 };
 
 const multiply = function() {
   accumulator = getValue();
   operation = "multiply";
-  clear1();
 };
 
 // Perform calculation
