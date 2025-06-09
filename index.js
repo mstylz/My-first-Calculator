@@ -34,3 +34,25 @@ const addOperator = (operator) => {
     // Replace the operator if last char is one
     expression = expression.slice(0, -1);
   }
+
+  expression += operator;
+  mainText.value = expression;
+};
+
+const plus = () => addOperator("+");
+const minus = () => addOperator("-");
+const multiply = () => addOperator("*");
+
+// Evaluate and display result
+const equals = () => {
+  try {
+    const result = eval(expression);
+    mainText.value = result;
+    expression = result.toString();
+    resultShown = true;
+  } catch (e) {
+    mainText.value = "Error";
+    expression = "";
+    resultShown = false;
+  }
+};
