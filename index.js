@@ -1,59 +1,36 @@
 const mainText = document.getElementById("mainText");
 
-let expression = "";           // Stores full input like "2+6"
-let justEvaluated = false;     // Tracks if = was just pressed
+let expression = "";
+let resultShown = false;
 
-// Clear all
+// Clears everything
 const clear1 = () => {
   expression = "";
+  resultShown = false;
   mainText.value = "";
-  justEvaluated = false;
 };
 
-// Handle numbers and dots
+// Appends number or dot
 const onClickNumber = (char) => {
-  if (justEvaluated) {
-    // If = was just pressed, and user types a number, start over
+  if (resultShown) {
+    // If result was just shown and next input is a number, start new expression
     expression = "";
-    justEvaluated = false;
+    resultShown = false;
   }
   expression += char;
   mainText.value = expression;
 };
 
-// Handle + - * operators
-const plus = () => addOperator("+");
-const minus = () => addOperator("-");
-const multiply = () => addOperator("*");
-
+// Add operators: +, -, *
 const addOperator = (operator) => {
-  if (justEvaluated) {
-    justEvaluated = false;
-    // If = was just pressed, continue with result
+  if (resultShown) {
+    resultShown = false;
+    // Continue from result
     expression = mainText.value;
   }
 
-  const lastChar = expression[expression.length - 1];
-  if (["+", "-", "*", "/"].includes(lastChar)) {
-    // Replace last operator if needed
-    expression = expression.slice(0, -1) + operator;
-  } else {
-    expression += operator;
+  const lastChar = expression.slice(-1);
+  if ("+-*/".includes(lastChar)) {
+    // Replace the operator if last char is one
+    expression = expression.slice(0, -1);
   }
-
-  mainText.value = expression;
-};
-
-// Calculate result
-const equals = () => {
-  try {
-    const result = eval(expression);
-    mainText.value = result;
-    expression = result.toString(); // continue chaining
-    justEvaluated = true;
-  } catch {
-    mainText.value = "Error";
-    expression = "";
-    justEvaluated = false;
-  }
-};
