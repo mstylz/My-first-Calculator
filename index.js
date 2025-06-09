@@ -1,73 +1,79 @@
-// Utility Functions
+// DOM Utility
 const getMainText = () => document.getElementById("mainText");
 
-const addTextToInput = function(digit) {
+let accumulator = null;
+let operation = null;
+let shouldResetScreen = false;
+
+// Updates input display
+const setValue = (val) => {
   const mainText = getMainText();
-  mainText.value = mainText.value + digit;
+  mainText.value = val;
 };
 
-const getValue = function() {
+// Gets current input value
+const getValue = () => {
   const mainText = getMainText();
-  return parseFloat(mainText.value) || 0;
+  return parseFloat(mainText.value);
 };
 
-const setValue = function(numericalValue) {
-  const mainText = getMainText();
-  mainText.value = numericalValue.toString();
+// Clears the input
+const clear1 = () => {
+  setValue("");
+  accumulator = null;
+  operation = null;
+  shouldResetScreen = false;
 };
 
-const clear1 = function() {
+// Called when user clicks a number
+const onClickNumber = (digit) => {
   const mainText = getMainText();
-  mainText.value = "";
+  if (shouldResetScreen) {
+    mainText.value = "";
+    shouldResetScreen = false;
+  }
+  mainText.value += digit;
 };
 
-// Calculator Logic
-let accumulator = 0;
-let operation = "";
-let isWaitingForSecondValue = false;
-
-const plus = function() {
+// Operation functions
+const plus = () => {
   accumulator = getValue();
   operation = "plus";
-  isWaitingForSecondValue = true;
+  shouldResetScreen = true;
 };
 
-const minus = function() {
+const minus = () => {
   accumulator = getValue();
   operation = "minus";
-  isWaitingForSecondValue = true;
+  shouldResetScreen = true;
 };
 
-const multiply = function() {
+const multiply = () => {
   accumulator = getValue();
   operation = "multiply";
-  isWaitingForSecondValue = true;
+  shouldResetScreen = true;
 };
 
-const equals = function() {
+// Equals function
+const equals = () => {
+  if (accumulator === null || operation === null) return;
   const secondValue = getValue();
+  let result = 0;
+
   switch (operation) {
     case "plus":
-      setValue(accumulator + secondValue);
+      result = accumulator + secondValue;
       break;
     case "minus":
-      setValue(accumulator - secondValue);
+      result = accumulator - secondValue;
       break;
     case "multiply":
-      setValue(accumulator * secondValue);
+      result = accumulator * secondValue;
       break;
   }
-  // Reset state
-  accumulator = 0;
-  operation = "";
-  isWaitingForSecondValue = false;
-};
 
-const onClickNumber = function(digit) {
-  const mainText = getMainText();
-  if (isWaitingForSecondValue) {
-    mainText.value = ""; // Clear for second number entry
-    isWaitingForSecondValue = false;
-  }
-  addTextToInput(digit);
+  setValue(result);
+  accumulator = null;
+  operation = null;
+  shouldResetScreen = true;
 };
