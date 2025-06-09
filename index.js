@@ -1,19 +1,19 @@
 const mainText = document.getElementById("mainText");
 
-let expression = ""; // stores the full typed input
-let justEvaluated = false;
+let expression = "";           // Stores full input like "2+6"
+let justEvaluated = false;     // Tracks if = was just pressed
 
-// Clears the screen and memory
+// Clear all
 const clear1 = () => {
   expression = "";
   mainText.value = "";
   justEvaluated = false;
 };
 
-// Handles number and dot input
+// Handle numbers and dots
 const onClickNumber = (char) => {
   if (justEvaluated) {
-    // If user just hit equals, start a new expression
+    // If = was just pressed, and user types a number, start over
     expression = "";
     justEvaluated = false;
   }
@@ -21,46 +21,39 @@ const onClickNumber = (char) => {
   mainText.value = expression;
 };
 
-// Handles addition
-const plus = () => {
-  addOperator("+");
-};
+// Handle + - * operators
+const plus = () => addOperator("+");
+const minus = () => addOperator("-");
+const multiply = () => addOperator("*");
 
-// Handles subtraction
-const minus = () => {
-  addOperator("-");
-};
-
-// Handles multiplication
-const multiply = () => {
-  addOperator("*"); // use * for JS, even though button shows 'x'
-};
-
-// Adds operator to expression
 const addOperator = (operator) => {
   if (justEvaluated) {
     justEvaluated = false;
+    // If = was just pressed, continue with result
+    expression = mainText.value;
   }
 
   const lastChar = expression[expression.length - 1];
-  if (["+","-","*","/"].includes(lastChar)) {
-    // Prevent double operators (like 2++3)
-    return;
+  if (["+", "-", "*", "/"].includes(lastChar)) {
+    // Replace last operator if needed
+    expression = expression.slice(0, -1) + operator;
+  } else {
+    expression += operator;
   }
 
-  expression += operator;
   mainText.value = expression;
 };
 
-// Evaluates the current expression
+// Calculate result
 const equals = () => {
   try {
     const result = eval(expression);
     mainText.value = result;
-    expression = result.toString(); // Allow chaining calculations
+    expression = result.toString(); // continue chaining
     justEvaluated = true;
   } catch {
     mainText.value = "Error";
     expression = "";
+    justEvaluated = false;
   }
 };
