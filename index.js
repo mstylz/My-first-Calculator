@@ -1,58 +1,66 @@
-const getMainText = () => document.getElementById("mainText");
+const mainText = document.getElementById("mainText");
 
-let expression = ""; // full string like "2+6"
-let resultShown = false;
+let expression = ""; // stores the full typed input
+let justEvaluated = false;
 
-const setValue = (val) => {
-  const mainText = getMainText();
-  mainText.value = val;
-};
-
+// Clears the screen and memory
 const clear1 = () => {
   expression = "";
-  resultShown = false;
-  setValue("");
+  mainText.value = "";
+  justEvaluated = false;
 };
 
-// Add number or operator to the expression
+// Handles number and dot input
 const onClickNumber = (char) => {
-  if (resultShown) {
-    expression = ""; // reset if a result was just shown
-    resultShown = false;
+  if (justEvaluated) {
+    // If user just hit equals, start a new expression
+    expression = "";
+    justEvaluated = false;
   }
   expression += char;
-  setValue(expression);
+  mainText.value = expression;
 };
 
+// Handles addition
 const plus = () => {
-  if (!expression.endsWith("+") && !expression.endsWith("-") && !expression.endsWith("*")) {
-    expression += "+";
-    setValue(expression);
-  }
+  addOperator("+");
 };
 
+// Handles subtraction
 const minus = () => {
-  if (!expression.endsWith("+") && !expression.endsWith("-") && !expression.endsWith("*")) {
-    expression += "-";
-    setValue(expression);
-  }
+  addOperator("-");
 };
 
+// Handles multiplication
 const multiply = () => {
-  if (!expression.endsWith("+") && !expression.endsWith("-") && !expression.endsWith("*")) {
-    expression += "*";
-    setValue(expression);
-  }
+  addOperator("*"); // use * for JS, even though button shows 'x'
 };
 
+// Adds operator to expression
+const addOperator = (operator) => {
+  if (justEvaluated) {
+    justEvaluated = false;
+  }
+
+  const lastChar = expression[expression.length - 1];
+  if (["+","-","*","/"].includes(lastChar)) {
+    // Prevent double operators (like 2++3)
+    return;
+  }
+
+  expression += operator;
+  mainText.value = expression;
+};
+
+// Evaluates the current expression
 const equals = () => {
   try {
-    const result = eval(expression); // CAUTION: eval can be dangerous; okay here for calculator use
-    setValue(result);
-    expression = result.toString();
-    resultShown = true;
-  } catch (err) {
-    setValue("Error");
+    const result = eval(expression);
+    mainText.value = result;
+    expression = result.toString(); // Allow chaining calculations
+    justEvaluated = true;
+  } catch {
+    mainText.value = "Error";
     expression = "";
   }
 };
