@@ -1,16 +1,14 @@
-const mainText = document.getElementById("mainText");
-
 let expression = "";
 let justEvaluated = false;
 
-// Clear screen
+const mainText = document.getElementById("mainText");
+
 const clear1 = () => {
   expression = "";
   justEvaluated = false;
   mainText.value = "";
 };
 
-// Append number or dot
 const onClickNumber = (char) => {
   if (justEvaluated) {
     expression = "";
@@ -20,18 +18,14 @@ const onClickNumber = (char) => {
   mainText.value = expression;
 };
 
-// Generic operator handler
 const addOperator = (operator) => {
   if (justEvaluated) {
     justEvaluated = false;
-    expression = mainText.value; // Use result as starting point
+    expression = mainText.value;
   }
 
   const lastChar = expression.slice(-1);
-  if ("+-*/.".includes(lastChar)) {
-    // Prevent double operators (like 2++ or 2..)
-    return;
-  }
+  if ("+-*/.".includes(lastChar)) return;
 
   expression += operator;
   mainText.value = expression;
@@ -39,14 +33,13 @@ const addOperator = (operator) => {
 
 const plus = () => addOperator("+");
 const minus = () => addOperator("-");
-const multiply = () => addOperator("*"); // ‘x’ visually, but JS uses '*'
+const multiply = () => addOperator("*");
 
-// Calculate result
 const equals = () => {
   try {
-    const result = eval(expression); // Use only in trusted environments
+    const result = eval(expression);
     mainText.value = result;
-    expression = result.toString(); // Allow further operations
+    expression = result.toString();
     justEvaluated = true;
   } catch (e) {
     mainText.value = "Error";
