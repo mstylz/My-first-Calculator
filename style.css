@@ -11,8 +11,9 @@ font-family: Arial, Helvetica, sans-serif;
     border-radius: 20px;
 }
 body{
-   
-    background-color:darkgrey;
+   display: flex;
+   justify-content: center;
+   background-color:darkgrey;
 }
 
 #mainText{
